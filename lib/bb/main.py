@@ -424,10 +424,12 @@ def setup_bitbake(configParams, extrafeatures=None):
     else:
         retries = 8
         while retries:
+            logger.info("retry no. (#%d)" % retries)
             try:
                 topdir, lock = lockBitbake()
                 sockname = topdir + "/bitbake.sock"
                 if lock:
+                    logger.info("if lock")
                     if configParams.status_only or configParams.kill_server:
                         logger.info("bitbake server is not running.")
                         lock.close()
@@ -439,7 +441,7 @@ def setup_bitbake(configParams, extrafeatures=None):
                     server = bb.server.process.BitBakeServer(lock, sockname, featureset, configParams.server_timeout, configParams.xmlrpcinterface)
 
                 else:
-                    logger.info("Reconnecting to bitbake server...")
+                    logger.info("Reconnecting to bitbake server... (#%d)" % retries)
                     if not os.path.exists(sockname):
                         logger.info("Previous bitbake instance shutting down?, waiting to retry...")
                         i = 0
@@ -458,9 +460,11 @@ def setup_bitbake(configParams, extrafeatures=None):
                 if server_connection or configParams.server_only:
                     break
             except BBMainFatal:
+                logger.info("BBMainFatal (#%d)" % retries)
                 raise
             except (Exception, bb.server.process.ProcessTimeout, SystemExit) as e:
                 # SystemExit does not inherit from the Exception class, needs to be included explicitly
+                logger.info("Timeout (#%d)" % retries)
                 if not retries:
                     raise
                 retries -= 1
