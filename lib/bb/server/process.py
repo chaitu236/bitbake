@@ -53,7 +53,7 @@ class ProcessServer():
         self.event_handle = None
         self.hadanyui = False
         self.haveui = False
-        self.maxuiwait = 300
+        self.maxuiwait = 30
         self.xmlrpc = False
 
         self._idlefuns = {}
