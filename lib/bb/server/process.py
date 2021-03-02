@@ -391,7 +391,7 @@ class ServerCommunicator():
         self.recv = recv
 
         self.reply_wait = 5
-        self.max_reply_wait = 300
+        self.max_reply_wait = 5
 
     def runCommand(self, command):
         self.connection.send(command)
